@@ -6,6 +6,13 @@
 class SortBubble : public CGraph::GNode
 {
   public:
+    CStatus init() override
+    {
+        CStatus status;
+        status = CGRAPH_CREATE_GPARAM(MyParam, "bubbleResult");
+        return status;
+    }
+
     CStatus run() override
     {
         CGraph::CGRAPH_ECHO("[%s]", this->getName().c_str());
@@ -16,6 +23,7 @@ class SortBubble : public CGraph::GNode
         {
             /* 对需要使用（读或写）参数的位置，加括号{}范围限定，以减少互斥等待时间 */
             CGRAPH_PARAM_READ_CODE_BLOCK(myParam)
+
             _list = myParam->list;
         }
 
@@ -30,9 +38,11 @@ class SortBubble : public CGraph::GNode
             }
         }
 
-        // for (auto &i : _list) {
-        //     CGraph::CGRAPH_ECHO("[%s], iValue is : [%d] ... ", this->getName().c_str(), i);
-        // }
+        auto *bubbleResult = CGRAPH_GET_GPARAM_WITH_NO_EMPTY(MyParam, "bubbleResult");
+        {
+            CGRAPH_PARAM_WRITE_CODE_BLOCK(bubbleResult);
+            bubbleResult->list = _list;
+        }
 
         return CStatus();
     }

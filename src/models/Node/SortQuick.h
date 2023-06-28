@@ -6,24 +6,33 @@
 class SortQuick : public CGraph::GNode
 {
   public:
+    CStatus init() override
+    {
+        CStatus status;
+        status = CGRAPH_CREATE_GPARAM(MyParam, "quickResult");
+        return status;
+    }
+
     CStatus run() override
     {
         CGraph::CGRAPH_ECHO("[%s]", this->getName().c_str());
 
-        auto myParam = CGRAPH_GET_GPARAM_WITH_NO_EMPTY(MyParam, "param1");
+        auto *myParam = CGRAPH_GET_GPARAM_WITH_NO_EMPTY(MyParam, "param1");
 
         std::vector<int> _list;
         {
             /* 对需要使用（读或写）参数的位置，加括号{}范围限定，以减少互斥等待时间 */
-            CGRAPH_PARAM_READ_CODE_BLOCK(myParam)
+            CGRAPH_PARAM_READ_CODE_BLOCK(myParam);
             _list = myParam->list;
         }
 
         quickSort(_list, 0, _list.size() - 1);
 
-        // for (auto &i : _list) {
-        //     CGraph::CGRAPH_ECHO("[%s], iValue is : [%d] ... ", this->getName().c_str(), i);
-        // }
+        auto *quickResult = CGRAPH_GET_GPARAM_WITH_NO_EMPTY(MyParam, "quickResult");
+        {
+            CGRAPH_PARAM_WRITE_CODE_BLOCK(quickResult);
+            quickResult->list = _list;
+        }
 
         return CStatus();
     }

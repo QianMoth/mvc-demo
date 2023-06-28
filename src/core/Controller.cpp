@@ -37,6 +37,11 @@ void Controller::start(int num)
     auto *randParam = pipeline->getGParam<MyParam>("param1");
     Q_EMIT sendRandResult(randParam->list);
 
+    auto *bubbleResult = pipeline->getGParam<MyParam>("bubbleResult");
+    Q_EMIT sendBubbleResult(bubbleResult->list);
+    auto *quickResult = pipeline->getGParam<MyParam>("quickResult");
+    Q_EMIT sendQuickResult(quickResult->list);
+
     pipeline->destroy();
 
     // status += pipeline->process();
