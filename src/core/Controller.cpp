@@ -1,11 +1,14 @@
 #include "Controller.hpp"
 
 #include <QDebug>
-#include <QThreadPool>
 
-#include "models/BubbleSort.hpp"
-#include "models/GenerateNum.hpp"
-#include "models/QuickSort.hpp"
+#include "CGraph.h"
+#include "models/Node/SortBubble.h"
+#include "models/Node/SortGenerate.h"
+#include "models/Node/SortQuick.h"
+#include "models/Param/MyParam.h"
+
+using namespace CGraph;
 
 Controller *Controller::instance()
 {
@@ -13,43 +16,30 @@ Controller *Controller::instance()
     return &controller;
 }
 
-Controller::Controller()
-{
-    qDebug() << "maxThreadCount: " << QThreadPool::globalInstance()->maxThreadCount();
-}
+Controller::Controller() {}
 
 void Controller::start(int num)
 {
-    auto randNum = new GenerateNum();
+    GPipelinePtr pipeline = GPipelineFactory::create();
+    CStatus status;
+    GElementPtr gene, bubble, quick = nullptr;
 
-    bubble = new BubbleSort;
-    quick = new QuickSort;
+    status += pipeline->registerGElement<SortGenerate>(&gene, {}, "Gene");
+    status += pipeline->registerGElement<SortBubble>(&bubble, {gene}, "Bubble");
+    status += pipeline->registerGElement<SortQuick>(&quick, {gene}, "Quick");
+    if (!status.isOK()) {
+        return;  // 使用时，请对所有CGraph接口的返回值做判定。本例子中省略
+    }
 
-    connect(randNum, &GenerateNum::sendArray, bubble, &BubbleSort::recvArray);
-    connect(randNum, &GenerateNum::sendArray, quick, &QuickSort::recvArray);
+    pipeline->init();
 
-    connect(randNum, &GenerateNum::sendArray, this, &Controller::recvRand);
+    pipeline->run();
+    auto *randParam = pipeline->getGParam<MyParam>("param1");
+    Q_EMIT sendRandResult(randParam->list);
 
-    connect(bubble, &BubbleSort::finish, this,
-            [=](QVector<int> num) { Q_EMIT sendBubbleResult(num); });
+    pipeline->destroy();
 
-    connect(quick, &QuickSort::finish, this,
-            [=](QVector<int> num) { Q_EMIT sendQuickResult(num); });
+    // status += pipeline->process();
 
-    randNum->recvNum(num);
-    QThreadPool::globalInstance()->start(randNum);
-}
-
-void Controller::recvRand(QVector<int> num)
-{
-    QThreadPool::globalInstance()->start(bubble);
-    QThreadPool::globalInstance()->start(quick);
-
-    Q_EMIT sendRandResult(num);
-}
-
-void Controller::clear()
-{
-    qDebug() << __FUNCTION__;
-    QThreadPool::globalInstance()->clear();
+    GPipelineFactory::remove(pipeline);
 }

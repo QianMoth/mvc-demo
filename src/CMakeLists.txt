@@ -7,23 +7,28 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 
 add_executable(${PROJECT_NAME})
 
-add_subdirectory(cli)
+# add_subdirectory(cli)
 add_subdirectory(core)
 add_subdirectory(ui)
 add_subdirectory(models)
 
-file(GLOB_RECURSE SRCS *.cpp)
-file(GLOB_RECURSE INCS *.hpp *.h)
+
+file(GLOB SRCS *.cpp)
+file(GLOB INCS *.hpp *.h)
 
 target_sources(${PROJECT_NAME}
   PRIVATE ${INCS} ${SRCS} # main.cpp
   PRIVATE ${CMAKE_SOURCE_DIR}/resources/win.rc
+  PRIVATE $<TARGET_OBJECTS:CGraph>
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(${PROJECT_NAME} 
+  PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+)
 
 target_include_directories(${PROJECT_NAME} 
-    PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  PRIVATE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/3rdparty/CGraph/src/>
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -36,22 +41,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_compile_options(
   ${PROJECT_NAME}
-  PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4 /wd4127 /EHsc /utf-8>
+  PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>
   PRIVATE $<$<C_COMPILER_ID:MSVC>:/utf-8>
-  PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>
-  PRIVATE $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Werror>
 )
 
 install(TARGETS ${PROJECT_NAME}
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  BUNDLE DESTINATION .
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-
-
-# include(InstallRequiredSystemLibraries)
-
-include(${CMAKE_SOURCE_DIR}/cmake/DeployQt.cmake)
-if(WIN32)
-  windeployqt(${PROJECT_NAME})
-endif()

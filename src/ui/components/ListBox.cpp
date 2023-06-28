@@ -41,7 +41,7 @@ void ListBox::setupUi()
     }
 }
 
-void ListBox::addItems(QVector<int> list)
+void ListBox::addItems(std::vector<int> list)
 {
     _model->clear();
     for (auto num : list) {

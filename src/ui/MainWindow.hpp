@@ -15,13 +15,15 @@ class MainWindow : public QWidget
     void start(int num);
 
   private:
+    /// @brief ui界面
     void setupUi();
 
   private Q_SLOTS:
-    void showRand(QVector<int> list);
-    void showBubble(QVector<int> list);
-    void showQuick(QVector<int> list);
+    void showRand(std::vector<int> list);
+    void showBubble(std::vector<int> list);
+    void showQuick(std::vector<int> list);
 
+    /// @brief 开始生成随机数据并排序
     void startSort();
 
   private:

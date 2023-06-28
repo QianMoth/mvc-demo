@@ -26,6 +26,7 @@ void MainWindow::setupUi()
     if (layout) {
         layout->setSpacing(0);
 
+        // 列表
         auto *hLayout = new QHBoxLayout();
         if (hLayout) {
             layout->addLayout(hLayout);
@@ -39,6 +40,7 @@ void MainWindow::setupUi()
             hLayout->addWidget(quickList);
         }
 
+        // 按钮
         auto *hLayout2 = new QHBoxLayout();
         if (hLayout2) {
             layout->addLayout(hLayout2);
@@ -49,22 +51,21 @@ void MainWindow::setupUi()
 
             auto *stopButton = new QPushButton(tr("停止"), this);
             hLayout2->addWidget(stopButton);
-            connect(stopButton, &QPushButton::clicked, Controller::instance(), &Controller::clear);
         }
     }
 }
 
-void MainWindow::showRand(QVector<int> list)
+void MainWindow::showRand(std::vector<int> list)
 {
     randList->addItems(list);
 }
 
-void MainWindow::showBubble(QVector<int> list)
+void MainWindow::showBubble(std::vector<int> list)
 {
     bubbleList->addItems(list);
 }
 
-void MainWindow::showQuick(QVector<int> list)
+void MainWindow::showQuick(std::vector<int> list)
 {
     quickList->addItems(list);
 }
