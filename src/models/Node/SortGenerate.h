@@ -20,7 +20,7 @@ class SortGenerate : public CGraph::GNode
         auto *myParam = CGRAPH_GET_GPARAM_WITH_NO_EMPTY(MyParam, "param1");
 
         std::vector<int> _list;
-        for (int i = 0; i < 20000; ++i) {
+        for (int i = 0; i < 10; ++i) {
             _list.push_back(rand() % 100000);
         }
 
