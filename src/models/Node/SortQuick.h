@@ -1,7 +1,8 @@
 #pragma once
 
+#include <CGraph/CGraph>
+
 #include "../Param/MyParam.h"
-#include "CGraph.h"
 
 class SortQuick : public CGraph::GNode
 {

@@ -1,8 +1,8 @@
 #include "Controller.hpp"
 
+#include <CGraph/CGraph>
 #include <QDebug>
 
-#include "CGraph.h"
 #include "models/Node/SortBubble.h"
 #include "models/Node/SortGenerate.h"
 #include "models/Node/SortQuick.h"

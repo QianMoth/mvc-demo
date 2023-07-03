@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CGraph.h"
+#include <CGraph/CGraph>
 
 struct MyParam : public CGraph::GParam
 {

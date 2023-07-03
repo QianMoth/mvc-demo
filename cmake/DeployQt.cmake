@@ -36,12 +36,18 @@ endif()
 function(windeployqt target)
 
   # Run windeployqt immediately after build
-  add_custom_command(
-    TARGET ${target}
-    POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}" --verbose 0
-            --compiler-runtime --no-translations \"$<TARGET_FILE:${target}>\"
-    COMMENT "Deploying Qt..."
+  # windeployqt error when creating translations https://bugreports.qt.io/browse/QTBUG-112204
+
+  install(CODE
+    "
+    execute_process(
+        COMMAND \"${CMAKE_COMMAND}\" -E env PATH=\"${_qt_bin_dir}\" \"${WINDEPLOYQT_EXECUTABLE}\" $<TARGET_FILE:${target}>
+        OUTPUT_VARIABLE output_var
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    MESSAGE(\"QT DIR : ${_qt_bin_dir}\")
+    MESSAGE(\"${WINDEPLOYQT_EXECUTABLE} $<TARGET_FILE:${target}>\")
+    "
   )
 
   # windeployqt doesn't work correctly with the system runtime libraries, so we fall back to one of CMake's own modules
@@ -54,25 +60,35 @@ function(windeployqt target)
 
   set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
   include(InstallRequiredSystemLibraries)
-  foreach(lib ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
-    get_filename_component(filename "${lib}" NAME)
-    add_custom_command(
-      TARGET ${target}
-      POST_BUILD
-      COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${lib}" \"$<TARGET_FILE_DIR:${target}>\"
-      COMMENT "Copying ${filename}..."
-    )
-  endforeach()
 endfunction()
 
 # Add commands that copy the required Qt files to the application bundle represented by the target.
 function(macdeployqt target)
-  add_custom_command(
-    TARGET ${target}
-    POST_BUILD
-    COMMAND "${MACDEPLOYQT_EXECUTABLE}" \"$<TARGET_FILE_DIR:${target}>/../..\" -always-overwrite
-    COMMENT "Deploying Qt..."
+  install(CODE
+    "
+    execute_process(
+        COMMAND \"${MACDEPLOYQT_EXECUTABLE}\" \"$<TARGET_FILE_DIR:${target}>/../..\"
+        OUTPUT_VARIABLE output_var
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    MESSAGE(\"${MACDEPLOYQT_EXECUTABLE} $<TARGET_FILE_DIR:${target}>/../..\")
+    execute_process(
+      COMMAND codesign --force --deep --sign - $<TARGET_FILE:${target}>
+      OUTPUT_VARIABLE output_var
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    "
   )
+endfunction()
+
+function(deployqt target)
+  if(WIN32)
+    windeployqt(${target})
+  elseif(APPLE)
+    macdeployqt(${target})
+  else()
+    message(STATUS "This platform is not currently supported")
+  endif()
 endfunction()
 
 mark_as_advanced(WINDEPLOYQT_EXECUTABLE MACDEPLOYQT_EXECUTABLE)
