@@ -18,16 +18,21 @@ class SortGenerate : public CGraph::GNode
         CGraph::CGRAPH_ECHO("[%s]", this->getName().c_str());
 
         auto *myParam = CGRAPH_GET_GPARAM_WITH_NO_EMPTY(MyParam, "param1");
+        std::cout << "=======================" << std::endl;
 
-        std::vector<int> _list;
-        for (int i = 0; i < 10; ++i) {
-            _list.push_back(rand() % 100000);
-        }
+        std::cout << "sizeof(*ptr) " << sizeof(*myParam) << " | addr " << myParam << std::endl;
 
-        {
-            CGRAPH_PARAM_WRITE_CODE_BLOCK(myParam)
-            myParam->list = _list;
-        }
+        std::cout << "=======================" << std::endl;
+
+        // std::vector<int> _list;
+        // for (int i = 0; i < 10; ++i) {
+        //     _list.push_back(rand() % 100000);
+        // }
+
+        // {
+        //     CGRAPH_PARAM_WRITE_CODE_BLOCK(myParam)
+        //     // myParam->list = _list;
+        // }
 
         return CStatus();
     }

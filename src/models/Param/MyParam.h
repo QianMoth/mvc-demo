@@ -2,12 +2,10 @@
 
 #include "CGraph.h"
 
-struct MyParam : public CGraph::GParam
+class MyParam : public CGraph::GParam
 {
-    CVoid reset(const CStatus &curStatus) override
-    {
-        // list.clear();
-    }
+  public:
+    CVoid reset(const CStatus &curStatus) override {}
 
-    std::vector<int> list;
+    // std::vector<int> list;
 };

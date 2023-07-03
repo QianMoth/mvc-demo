@@ -7,11 +7,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 
 add_executable(${PROJECT_NAME})
 
-# add_subdirectory(cli)
-# add_subdirectory(core)
-# add_subdirectory(ui)
 add_subdirectory(models)
-
 
 file(GLOB SRCS *.cpp)
 file(GLOB INCS *.hpp *.h)
