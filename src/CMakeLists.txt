@@ -14,7 +14,6 @@ file(GLOB INCS *.hpp *.h)
 
 target_sources(${PROJECT_NAME}
   PRIVATE ${INCS} ${SRCS} # main.cpp
-  PRIVATE ${CMAKE_SOURCE_DIR}/resources/win.rc
   PRIVATE $<TARGET_OBJECTS:CGraph>
 )
 
