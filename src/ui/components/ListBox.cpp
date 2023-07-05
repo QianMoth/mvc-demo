@@ -41,7 +41,7 @@ void ListBox::setupUi()
     }
 }
 
-void ListBox::addItems(std::vector<int> list)
+void ListBox::addItems(const std::vector<int> &list)
 {
     _model->clear();
     for (auto num : list) {

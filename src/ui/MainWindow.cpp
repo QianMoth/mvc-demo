@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QPushButton>
 #include <QString>
+#include <utility>
 
 #include "components/ListBox.hpp"
 #include "core/Controller.hpp"
@@ -55,17 +56,17 @@ void MainWindow::setupUi()
     }
 }
 
-void MainWindow::showRand(std::vector<int> list)
+void MainWindow::showRand(const std::vector<int> &list)
 {
     randList->addItems(list);
 }
 
-void MainWindow::showBubble(std::vector<int> list)
+void MainWindow::showBubble(const std::vector<int> &list)
 {
     bubbleList->addItems(list);
 }
 
-void MainWindow::showQuick(std::vector<int> list)
+void MainWindow::showQuick(const std::vector<int> &list)
 {
     quickList->addItems(list);
 }

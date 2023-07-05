@@ -8,21 +8,21 @@
 #include "models/Node/SortQuick.h"
 #include "models/Param/MyParam.h"
 
-using namespace CGraph;
-
 Controller *Controller::instance()
 {
     static Controller controller;
     return &controller;
 }
 
-Controller::Controller() {}
+Controller::Controller() = default;
 
 void Controller::start(int num)
 {
-    GPipelinePtr pipeline = GPipelineFactory::create();
+    CGraph::GPipelinePtr pipeline = CGraph::GPipelineFactory::create();
     CStatus status;
-    GElementPtr gene, bubble, quick = nullptr;
+    CGraph::GElementPtr gene = nullptr;
+    CGraph::GElementPtr bubble = nullptr;
+    CGraph::GElementPtr quick = nullptr;
 
     status += pipeline->registerGElement<SortGenerate>(&gene, {}, "Gene");
     status += pipeline->registerGElement<SortBubble>(&bubble, {gene}, "Bubble");
@@ -46,5 +46,5 @@ void Controller::start(int num)
 
     // status += pipeline->process();
 
-    GPipelineFactory::remove(pipeline);
+    CGraph::GPipelineFactory::remove(pipeline);
 }

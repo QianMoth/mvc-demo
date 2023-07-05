@@ -19,9 +19,9 @@ class MainWindow : public QWidget
     void setupUi();
 
   private Q_SLOTS:
-    void showRand(std::vector<int> list);
-    void showBubble(std::vector<int> list);
-    void showQuick(std::vector<int> list);
+    void showRand(const std::vector<int> &list);
+    void showBubble(const std::vector<int> &list);
+    void showQuick(const std::vector<int> &list);
 
     /// @brief 开始生成随机数据并排序
     void startSort();

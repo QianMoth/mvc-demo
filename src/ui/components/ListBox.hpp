@@ -11,7 +11,7 @@ class ListBox : public QWidget
   public:
     ListBox(const QString &title, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
 
-    void addItems(std::vector<int> list);
+    void addItems(const std::vector<int> &list);
 
   private:
     void setupUi();

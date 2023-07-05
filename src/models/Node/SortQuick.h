@@ -42,7 +42,8 @@ class SortQuick : public CGraph::GNode
     void quickSort(std::vector<int> &s, int l, int r)
     {
         if (l < r) {
-            int i = l, j = r;
+            int i = l;
+            int j = r;
             // 拿出第一个元素, 保存到x中,第一个位置成为一个坑
             int x = s[l];
             while (i < j) {
